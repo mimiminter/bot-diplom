@@ -10,11 +10,13 @@ using System.Data.SqlClient;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography.X509Certificates;
+using System.IO;
+using System.Text;
 
 static DataTable Select(string selectSQL)
 {
     DataTable dataTable = new("dataBase");
-    SqlConnection sqlConnection = new("server=WIN-NHF22QP2E4K\\SQLEXPRESS; Trusted_Connection=YES;DataBase=bot;");
+    SqlConnection sqlConnection = new("server=localhost\\SQLEXPRESS; Trusted_Connection=YES;DataBase=bot;");
     sqlConnection.Open();
     SqlCommand sqlCommand = sqlConnection.CreateCommand();
     sqlCommand.CommandText = selectSQL;
@@ -36,7 +38,20 @@ client.StartReceiving(updateHandler: HandleUpdateAsync,
     receiverOptions: receiverOptions,
     cancellationToken: cts.Token);
 var me = await client.GetMeAsync();
-Console.WriteLine($"Старт @{me.Username}");
+string path = @"C:\Users\Администратор\Desktop\zapis'_bot.txt";
+if (System.IO.File.Exists(path))
+{
+    Console.WriteLine("файл есть");
+}
+else
+{
+    Console.WriteLine("файла нет");
+}
+using (StreamWriter writer = new StreamWriter(path,true))
+{
+    await writer.WriteLineAsync($"Старт @{me.Username}, время {DateTime.Now}");
+}
+Console.WriteLine($"Старт @{me.Username}, время {DateTime.Now}");
 Console.ReadLine();
 cts.Cancel();
 async Task HandleUpdateAsync(ITelegramBotClient client, Update update, CancellationToken token)
@@ -52,17 +67,62 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
             InlineKeyboardButton.WithCallbackData(text:"Выход",callbackData:"personalAreaBack")//назад в кабинете слушателя
         }
     });
-    /*InlineKeyboardMarkup choice = new(new[]
+    InlineKeyboardMarkup groupvk= new(new[]
     {
         new []
         {
-            InlineKeyboardButton.WithCallbackData(text:"Да",callbackData:"choiceYes")
+            InlineKeyboardButton.WithCallbackData(text:"Назад",callbackData:"groupvkback")
+        }
+    });
+    InlineKeyboardMarkup phone_back = new(new[]
+    {
+        new []
+        {
+            InlineKeyboardButton.WithCallbackData(text:"Назад",callbackData:"phoneback")
+        }
+    });
+    InlineKeyboardMarkup dopback = new(new[]
+    {
+        new []
+        {
+            InlineKeyboardButton.WithCallbackData(text:"Назад",callbackData:"dopback")
+        }
+    });
+    InlineKeyboardMarkup doporprof = new(new[]
+    {
+        new []
+        {
+            InlineKeyboardButton.WithCallbackData(text:"Тестирование и контроль качества ПО",callbackData:"doporprof1")
         },
         new []
         {
-            InlineKeyboardButton.WithCallbackData(text:"Нет",callbackData:"choiceNo")
+            InlineKeyboardButton.WithCallbackData(text:"Языки программирования",callbackData:"doporprof2")
+        },
+        new []
+        {
+            InlineKeyboardButton.WithCallbackData(text:"Сетевое и системное администрирование",callbackData:"doporprof3")
+        },
+        new []
+        {
+            InlineKeyboardButton.WithCallbackData(text:"Информационная безопасность",callbackData:"doporprof4")
+        },
+        new []
+        {
+            InlineKeyboardButton.WithCallbackData(text:"Сенсорика,электроника и радиотехника",callbackData:"doporprof5")
+        },
+        new []
+        {
+            InlineKeyboardButton.WithCallbackData(text:"Образование",callbackData:"doporprof6")
+        },
+        new []
+        {
+            InlineKeyboardButton.WithCallbackData(text:"Экономика и управление",callbackData:"doporprof6")
+        },
+        new []
+        {
+            InlineKeyboardButton.WithCallbackData(text:"Назад",callbackData:"doporprofback")
         }
-    });*/
+    });
     InlineKeyboardMarkup menu0 = new(new[]
     {
         new []
@@ -75,23 +135,11 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
         },
         new []
         {
-            InlineKeyboardButton.WithCallbackData(text:"Адреса университета 1",callbackData:"myCommand2")//надо убрать
+            InlineKeyboardButton.WithCallbackData(text:"Направления для обучения",callbackData:"myCommand2")// тестирование там и тд
         },
         new []
         {
-            InlineKeyboardButton.WithCallbackData(text:"Адреса университета 2",callbackData:"myCommand5")//надо убрать
-        },
-        new []
-        {
-            InlineKeyboardButton.WithCallbackData(text:"Адреса общежитий",callbackData:"myCommand6")//надо убрать
-        },
-        new []
-        {
-            InlineKeyboardButton.WithCallbackData(text:"Специалисты по вопросам поступления",callbackData:"myCommand3")//спецы
-        },
-        new []
-        {
-            InlineKeyboardButton.WithCallbackData(text:"Образование/повышение квалификации",callbackData:"myCommand4")//компетенции
+            InlineKeyboardButton.WithCallbackData(text:"Группа ВК",callbackData:"myCommand5")//надо убрать
         },
         new []
         {
@@ -116,17 +164,6 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
             InlineKeyboardButton.WithCallbackData(text:"Назад",callbackData:"callbackbackuser")//кнопка назад
         }
     });
-    InlineKeyboardMarkup menuadmin = new(new[]
-    {
-        new []
-        {
-            InlineKeyboardButton.WithCallbackData(text:"Войти",callbackData:"callbackauthadmin")
-        },
-        new []
-        {
-            InlineKeyboardButton.WithCallbackData(text:"Назад",callbackData:"callbackbackadmin")
-        }
-    });
     InlineKeyboardMarkup menuback = new(new[]
     {
         new []
@@ -141,37 +178,6 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
             InlineKeyboardButton.WithCallbackData(text:"Назад",callbackData:"menuback1")//кнопка назад
         }
     });
-    InlineKeyboardMarkup menuback1 = new(new[]
-   {
-        new []
-        {
-            InlineKeyboardButton.WithUrl(text:"Общежитие №1",url:"https://go.2gis.com/b6yq8")
-        },
-        new []
-        {
-            InlineKeyboardButton.WithUrl(text:"Общежитие №2",url:"https://go.2gis.com/ku65t")
-        },
-        new []
-        {
-            InlineKeyboardButton.WithUrl(text:"Общежитие №3",url:"https://go.2gis.com/eb3xx")
-        },
-        new []
-        {
-            InlineKeyboardButton.WithUrl(text:"Общежитие №4",url:"https://go.2gis.com/rsg15")
-        },
-        new []
-        {
-            InlineKeyboardButton.WithUrl(text:"Общежитие №5",url:"https://go.2gis.com/gqsiq")
-        },
-        new []
-        {
-            InlineKeyboardButton.WithUrl(text:"Общежитие №6",url:"https://go.2gis.com/5bsmu")
-        },
-        new []
-        {
-            InlineKeyboardButton.WithCallbackData(text:"Назад",callbackData:"menuback11")
-        }
-    });
     if (update.Type == UpdateType.Message && update.Message!.Type == MessageType.Text)
     {
         var chatId = update.Message.Chat.Id;
@@ -180,7 +186,7 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
         Console.WriteLine($"Received a '{messageText}' message in chat {chatId}.");
         string text = messageText;
         string[] words = text.Split(' ');
-        if (!words.Contains("/start") && !words.Contains("/adminprofile") && words.Length == 2)
+        if (!words.Contains("/start") && words.Length == 2)
         {
             string authorization1 = words[0];
             string authorization2 = words[1];
@@ -188,7 +194,12 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
             DataTable sel = Select("select * from [dbo].[Listeners] where login_listener = '" + authorization1 + "' and password_listener = '" + authorization2 + "'");
             if (sel.Rows.Count > 0)//личный кабинет слушателя
             {
-                string connectionString = @"server=WIN-NHF22QP2E4K\SQLEXPRESS; Trusted_Connection=YES;DataBase=bot;";
+                string path = @"C:\Users\Администратор\Desktop\zapis'_bot.txt";
+                using (StreamWriter writer = new StreamWriter(path, true))
+                {
+                    await writer.WriteLineAsync($"Авторизовался пользователь: логин - {authorization1}, пароль - {authorization2}");
+                }
+                string connectionString = @"server=localhost\SQLEXPRESS; Trusted_Connection=YES;DataBase=bot;";
                 string sqlExperssion = "select Persons.surname,Persons.name,Persons.patronymic,Competence.name_competce,DAY(Courses.date_start),MONTH(Courses.date_start),YEAR(Courses.date_start),DAY(Courses.date_end),MONTH(Courses.date_end),YEAR(Courses.date_end),timetable.[day],timetable.time_1,timetable.time_2,Listeners.email,sex.sex_name from Listeners,Persons,Competence,Courses,timetable,sex where Courses.id_time = timetable.id and Listeners.id_course = Courses.id and Courses.id_competence = Competence.id and Listeners.id_person = Persons.id and Persons.id_sex = sex.id and login_listener = '" + words[0] + "'";
                 using SqlConnection connection = new SqlConnection(connectionString);
                 {
@@ -255,13 +266,65 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
     {
         case UpdateType.CallbackQuery:
         {
-                if (update.CallbackQuery.Data == "personalAreaPasswordUpdate")
+                if (update.CallbackQuery.Data == "doporprof1")
                 {
                     Message sentMessage = await client.EditMessageTextAsync(
                     messageId: update.CallbackQuery.Message.MessageId,
                     chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: "Для смены пароля выполните следующие действия:\n1)Введите логин и новый пароль в одно сообщение через пробел\n",
-                    replyMarkup: menu0,
+                    text: "Профессиональная переподготовка:\n" +
+                    "\nТестирование и контроль качества ПО (https://do.tusur.ru/?45865)\n" +
+                    "Специалист по тестированию ПО (https://do.tusur.ru/?45856)\n" +
+                    "\nПовышение квалификации:\n" +
+                    "\nАвтоматизированное тестирование ПО (https://do.tusur.ru/?45714)\n" +
+                    "Тестирование и контроль качества ПО (https://do.tusur.ru/software_quality_assurance)\n" +
+                    "Модульное тестирование ПО (https://do.tusur.ru/?45696)\n" +
+                    "Тестирование мобильных приложений (https://do.tusur.ru/?45713)\n" +
+                    "\nБольше информации - https://do.tusur.ru/",
+                    replyMarkup: dopback,
+                    cancellationToken: token);
+                }
+                if (update.CallbackQuery.Data == "doporprof2")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Повышение квалификации:\n" +
+                    "\nFront-end разработка (https://do.tusur.ru/?45568)\n" +
+                    "Программирование на языке Python (https://do.tusur.ru/?45571)\n" +
+                    "Разработка нейронных сетей на Python с нуля (https://do.tusur.ru/?45849)\n" +
+                    "Разработка нейронных сетей на Python (https://do.tusur.ru/?45850)\n" +
+                    "Основы Java-программирования (https://do.tusur.ru/?45818)\n" +
+                    "Основы SQL (https://do.tusur.ru/?45852)\n" +
+                    "Программирование на языке Java. Базовый курс (https://do.tusur.ru/courses/programs/java)\n" +
+                    "Профессиональная разработка на языке Java (https://do.tusur.ru/JavaDeveloper)\n" +
+                    "Объектно-ориентированное программирование (https://do.tusur.ru/courses/programs/oop)\n" +
+                    "Объектно-ориентированное программирование на языке С++ (https://do.tusur.ru/?45573)\n" +
+                    "Конфигурирование и программирование в системе «1С:Предприятие» (https://do.tusur.ru/courses/1c-conf-and-prog)\n" +
+                    "\nБольше информации - https://do.tusur.ru/",
+                    replyMarkup: dopback,
+                    cancellationToken: token);
+                }
+                if (update.CallbackQuery.Data == "doporprof3")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Профессиональная переподготовка:\n" +
+                    "\nСистемное администрирование (https://do.tusur.ru/?45834)\n" +
+                    "Проектирование, строительство и эксплуатация инфокоммуникационных сетей (https://do.tusur.ru/?45833)\n" +
+                    "\nПовышение квалификации:\n" +
+                    "\nСетевой специалист (https://do.tusur.ru/?45832)\n" +
+                    "Сетевой техник (https://do.tusur.ru/?45817)\n" +
+                    "Построение масштабируемых и распределенных сетей (https://do.tusur.ru/courses/icnd2)\n" +
+                    "Введение в сетевые технологии (https://do.tusur.ru/?45831)\n" +
+                    "Основы маршрутизации и коммутации (https://do.tusur.ru/courses/programs/Routing-and-Switching-Essentials)\n" +
+                    "Построение масштабируемых сетей (https://do.tusur.ru/courses/programs/Scaling-Networks)\n" +
+                    "Построение распределенных сетей (https://do.tusur.ru/courses/programs/Connecting-Networks)\n" +
+                    "Администрирование Linux (https://do.tusur.ru/courses/programs/linux)\n" +
+                    "Система мониторинга Zabbix (https://do.tusur.ru/zabbix-monitoring-software)\n" +
+                    "Установка, настройка и администрирование Microsoft Windows Server (https://do.tusur.ru/courses/programs/ms-windows-server)\n" +
+                    "\nБольше информации - https://do.tusur.ru/",
+                    replyMarkup: dopback,
                     cancellationToken: token);
                 }
                 if (update.CallbackQuery.Data == "personalAreaBack")
@@ -287,17 +350,36 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
                     Message sentMessage = await client.EditMessageTextAsync(
                     messageId: update.CallbackQuery.Message.MessageId,
                     chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: "Здесь вы можете узнать информацию о следующем",
+                    text: "Здесь вы можете узнать следующую информацию:",
                     replyMarkup: menu0,
                     cancellationToken: token);
                 }
-                if (update.CallbackQuery.Data == "callbackbackuser")
+                
+                if (update.CallbackQuery.Data == "myCommand1")
                 {
                     Message sentMessage = await client.EditMessageTextAsync(
                     messageId: update.CallbackQuery.Message.MessageId,
                     chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: "Здравствуйте, выберите, вы слушатель или пользователь:",
-                    replyMarkup: menu1,
+                    text: "Номер телефона справочной: Тел. +7 (3822) 70-17-36",
+                    replyMarkup: phone_back,
+                    cancellationToken: token);
+                }
+                if (update.CallbackQuery.Data == "myCommand5")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Ссылка на группу: https://vk.com/cit_tusur_ru",
+                    replyMarkup: groupvk,
+                    cancellationToken: token);
+                }
+                if (update.CallbackQuery.Data == "myCommand2")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Направление для обучения:",
+                    replyMarkup: doporprof,
                     cancellationToken: token);
                 }
                 if (update.CallbackQuery.Data == "myCommandBack")
@@ -309,40 +391,49 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
                     replyMarkup: menu1,
                     cancellationToken: token);
                 }
-                if (update.CallbackQuery.Data == "myCommand1")
+                if (update.CallbackQuery.Data == "phoneback")
                 {
                     Message sentMessage = await client.EditMessageTextAsync(
                     messageId: update.CallbackQuery.Message.MessageId,
                     chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: "Номер телефона справочной: Тел. +7 (3822) 70-17-36",
-                    replyMarkup: menuback,
-                    cancellationToken: token);
-                }
-                if (update.CallbackQuery.Data == "menuback1")
-                {
-                    Message sentMessage = await client.EditMessageTextAsync(
-                    messageId: update.CallbackQuery.Message.MessageId,
-                    chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: "Здесь вы можете узнать информацию о следующем",
+                    text: "Здесь вы можете узнать следующую информацию:",
                     replyMarkup: menu0,
                     cancellationToken: token);
                 }
-                if (update.CallbackQuery.Data == "menuback11")
+                if (update.CallbackQuery.Data == "groupvkback")
                 {
                     Message sentMessage = await client.EditMessageTextAsync(
                     messageId: update.CallbackQuery.Message.MessageId,
                     chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: "Здесь вы можете узнать информацию о следующем",
+                    text: "Здесь вы можете узнать следующую информацию:",
                     replyMarkup: menu0,
                     cancellationToken: token);
                 }
-                if (update.CallbackQuery.Data == "myCommand6")
+                if (update.CallbackQuery.Data == "doporprofback")
                 {
                     Message sentMessage = await client.EditMessageTextAsync(
                     messageId: update.CallbackQuery.Message.MessageId,
                     chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: "Адреса общежитий:\n19 Гвардейской Дивизии, 9а (Общежитие №1)\r\nВершинина, 32 (Общежитие №2, Центр Кибербезопасность)\r\nПроспект Кирова, 56а (Общежитие №3)\r\nФедора Лыткина, 10 (Общежитие №4)\r\nФедора Лыткина, 18 (Общежитие №5,Дирекция студ. городка)\r\nФедора Лыткина, 8 (Общежитие №6)",
-                    replyMarkup: menuback1,
+                    text: "Здесь вы можете узнать следующую информацию:",
+                    replyMarkup: menu0,
+                    cancellationToken: token);
+                }
+                if (update.CallbackQuery.Data == "dopback")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Направление для обучения:",
+                    replyMarkup: doporprof,
+                    cancellationToken: token);
+                }
+                if (update.CallbackQuery.Data == "callbackbackuser")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Здравствуйте, выберите, вы слушатель или пользователь:",
+                    replyMarkup: menu1,
                     cancellationToken: token);
                 }
                 Console.WriteLine($"Received a '{update.CallbackQuery.Data}' button in chat.");
