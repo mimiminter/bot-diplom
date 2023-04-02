@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 static DataTable Select(string selectSQL)
 {
@@ -58,10 +59,10 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
 {
     InlineKeyboardMarkup personalArea = new(new[]
     {
-         new []
+        /* new []
         {
             InlineKeyboardButton.WithCallbackData(text:"Сменить пароль",callbackData:"personalAreaPasswordUpdate")//смена пароля слушателя
-        },
+        },*/
         new []
         {
             InlineKeyboardButton.WithCallbackData(text:"Выход",callbackData:"personalAreaBack")//назад в кабинете слушателя
@@ -116,7 +117,7 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
         },
         new []
         {
-            InlineKeyboardButton.WithCallbackData(text:"Экономика и управление",callbackData:"doporprof6")
+            InlineKeyboardButton.WithCallbackData(text:"Экономика и управление",callbackData:"doporprof7")
         },
         new []
         {
@@ -139,7 +140,11 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
         },
         new []
         {
-            InlineKeyboardButton.WithCallbackData(text:"Группа ВК",callbackData:"myCommand5")//надо убрать
+            InlineKeyboardButton.WithCallbackData(text:"Специалисты",callbackData:"myCommand6")// тестирование там и тд
+        },
+        new []
+        {
+            InlineKeyboardButton.WithCallbackData(text:"Группа ВК",callbackData:"myCommand5")//группа вк
         },
         new []
         {
@@ -165,13 +170,6 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
         }
     });
     InlineKeyboardMarkup menuback = new(new[]
-    {
-        new []
-        {
-            InlineKeyboardButton.WithCallbackData(text:"Назад",callbackData:"menuback1")//кнопка назад
-        }
-    });
-    InlineKeyboardMarkup passwordupdate = new(new[]
     {
         new []
         {
@@ -271,14 +269,14 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
                     Message sentMessage = await client.EditMessageTextAsync(
                     messageId: update.CallbackQuery.Message.MessageId,
                     chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: "Профессиональная переподготовка:\n" +
-                    "\nТестирование и контроль качества ПО (https://do.tusur.ru/?45865)\n" +
-                    "Специалист по тестированию ПО (https://do.tusur.ru/?45856)\n" +
+                    text: "Тестирование и контроль качества ПО\nПрофессиональная переподготовка:\n" +
+                    "\n•Тестирование и контроль качества ПО (https://do.tusur.ru/?45865)\n" +
+                    "•Специалист по тестированию ПО (https://do.tusur.ru/?45856)\n" +
                     "\nПовышение квалификации:\n" +
-                    "\nАвтоматизированное тестирование ПО (https://do.tusur.ru/?45714)\n" +
-                    "Тестирование и контроль качества ПО (https://do.tusur.ru/software_quality_assurance)\n" +
-                    "Модульное тестирование ПО (https://do.tusur.ru/?45696)\n" +
-                    "Тестирование мобильных приложений (https://do.tusur.ru/?45713)\n" +
+                    "\n•Автоматизированное тестирование ПО (https://do.tusur.ru/?45714)\n" +
+                    "•Тестирование и контроль качества ПО (https://do.tusur.ru/software_quality_assurance)\n" +
+                    "•Модульное тестирование ПО (https://do.tusur.ru/?45696)\n" +
+                    "•Тестирование мобильных приложений (https://do.tusur.ru/?45713)\n" +
                     "\nБольше информации - https://do.tusur.ru/",
                     replyMarkup: dopback,
                     cancellationToken: token);
@@ -288,18 +286,18 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
                     Message sentMessage = await client.EditMessageTextAsync(
                     messageId: update.CallbackQuery.Message.MessageId,
                     chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: "Повышение квалификации:\n" +
-                    "\nFront-end разработка (https://do.tusur.ru/?45568)\n" +
-                    "Программирование на языке Python (https://do.tusur.ru/?45571)\n" +
-                    "Разработка нейронных сетей на Python с нуля (https://do.tusur.ru/?45849)\n" +
-                    "Разработка нейронных сетей на Python (https://do.tusur.ru/?45850)\n" +
-                    "Основы Java-программирования (https://do.tusur.ru/?45818)\n" +
-                    "Основы SQL (https://do.tusur.ru/?45852)\n" +
-                    "Программирование на языке Java. Базовый курс (https://do.tusur.ru/courses/programs/java)\n" +
-                    "Профессиональная разработка на языке Java (https://do.tusur.ru/JavaDeveloper)\n" +
-                    "Объектно-ориентированное программирование (https://do.tusur.ru/courses/programs/oop)\n" +
-                    "Объектно-ориентированное программирование на языке С++ (https://do.tusur.ru/?45573)\n" +
-                    "Конфигурирование и программирование в системе «1С:Предприятие» (https://do.tusur.ru/courses/1c-conf-and-prog)\n" +
+                    text: "Языки программирования\nПовышение квалификации:\n" +
+                    "\n•Front-end разработка (https://do.tusur.ru/?45568)\n" +
+                    "•Программирование на языке Python (https://do.tusur.ru/?45571)\n" +
+                    "•Разработка нейронных сетей на Python с нуля (https://do.tusur.ru/?45849)\n" +
+                    "•Разработка нейронных сетей на Python (https://do.tusur.ru/?45850)\n" +
+                    "•Основы Java-программирования (https://do.tusur.ru/?45818)\n" +
+                    "•Основы SQL (https://do.tusur.ru/?45852)\n" +
+                    "•Программирование на языке Java. Базовый курс (https://do.tusur.ru/courses/programs/java)\n" +
+                    "•Профессиональная разработка на языке Java (https://do.tusur.ru/JavaDeveloper)\n" +
+                    "•Объектно-ориентированное программирование (https://do.tusur.ru/courses/programs/oop)\n" +
+                    "•Объектно-ориентированное программирование на языке С++ (https://do.tusur.ru/?45573)\n" +
+                    "•Конфигурирование и программирование в системе «1С:Предприятие» (https://do.tusur.ru/courses/1c-conf-and-prog)\n" +
                     "\nБольше информации - https://do.tusur.ru/",
                     replyMarkup: dopback,
                     cancellationToken: token);
@@ -309,20 +307,114 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
                     Message sentMessage = await client.EditMessageTextAsync(
                     messageId: update.CallbackQuery.Message.MessageId,
                     chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: "Профессиональная переподготовка:\n" +
-                    "\nСистемное администрирование (https://do.tusur.ru/?45834)\n" +
-                    "Проектирование, строительство и эксплуатация инфокоммуникационных сетей (https://do.tusur.ru/?45833)\n" +
+                    text: "Сетевое и системное администрирование\nПрофессиональная переподготовка:\n" +
+                    "\n•Системное администрирование (https://do.tusur.ru/?45834)\n" +
+                    "•Проектирование, строительство и эксплуатация инфокоммуникационных сетей (https://do.tusur.ru/?45833)\n" +
                     "\nПовышение квалификации:\n" +
-                    "\nСетевой специалист (https://do.tusur.ru/?45832)\n" +
-                    "Сетевой техник (https://do.tusur.ru/?45817)\n" +
-                    "Построение масштабируемых и распределенных сетей (https://do.tusur.ru/courses/icnd2)\n" +
-                    "Введение в сетевые технологии (https://do.tusur.ru/?45831)\n" +
-                    "Основы маршрутизации и коммутации (https://do.tusur.ru/courses/programs/Routing-and-Switching-Essentials)\n" +
-                    "Построение масштабируемых сетей (https://do.tusur.ru/courses/programs/Scaling-Networks)\n" +
-                    "Построение распределенных сетей (https://do.tusur.ru/courses/programs/Connecting-Networks)\n" +
-                    "Администрирование Linux (https://do.tusur.ru/courses/programs/linux)\n" +
-                    "Система мониторинга Zabbix (https://do.tusur.ru/zabbix-monitoring-software)\n" +
-                    "Установка, настройка и администрирование Microsoft Windows Server (https://do.tusur.ru/courses/programs/ms-windows-server)\n" +
+                    "\n•Сетевой специалист (https://do.tusur.ru/?45832)\n" +
+                    "•Сетевой техник (https://do.tusur.ru/?45817)\n" +
+                    "•Построение масштабируемых и распределенных сетей (https://do.tusur.ru/courses/icnd2)\n" +
+                    "•Введение в сетевые технологии (https://do.tusur.ru/?45831)\n" +
+                    "•Основы маршрутизации и коммутации (https://do.tusur.ru/courses/programs/Routing-and-Switching-Essentials)\n" +
+                    "•Построение масштабируемых сетей (https://do.tusur.ru/courses/programs/Scaling-Networks)\n" +
+                    "•Построение распределенных сетей (https://do.tusur.ru/courses/programs/Connecting-Networks)\n" +
+                    "•Администрирование Linux (https://do.tusur.ru/courses/programs/linux)\n" +
+                    "•Система мониторинга Zabbix (https://do.tusur.ru/zabbix-monitoring-software)\n" +
+                    "•Установка, настройка и администрирование Microsoft Windows Server (https://do.tusur.ru/courses/programs/ms-windows-server)\n" +
+                    "\nБольше информации - https://do.tusur.ru/",
+                    replyMarkup: dopback,
+                    cancellationToken: token);
+                }
+                if (update.CallbackQuery.Data == "doporprof4")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Информационная безопасность\nПовышение квалификации:\n" +
+                    "\n•Обеспечение безопасности персональных данных при их обработке в информационных системах персональных данных (https://do.tusur.ru/courses/programs/personal_data_protection)\n" +
+                    "•Операции с сетевыми данными в области информационной безопасности (https://do.tusur.ru/?45822)\n" +
+                    "•Цифровые технологии информационной безопасности (https://do.tusur.ru/?45823)\n" +
+                    "\nБольше информации - https://do.tusur.ru/",
+                    replyMarkup: dopback,
+                    cancellationToken: token);
+                }
+                if (update.CallbackQuery.Data == "doporprof5")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Сенсорика, электроника и радиотехника\nПовышение квалификации:\n" +
+                    "\n•Синтез частот и характеризация источников сигналов на СВЧ в сенсорных системах (https://do.tusur.ru/?45853)\n" +
+                    "•Основы синтеза и моделирования цифровых схем на ПЛИС (https://do.tusur.ru/?45835)\n" +
+                    "•Основы конструирования радиоэлектронных средств (https://do.tusur.ru/?45838)\n" +
+                    "•Современные подходы к автоматизации процесса измерения (https://do.tusur.ru/?45821)\n" +
+                    "•Современные методы программной обработки сигналов сенсоров различных типов (https://do.tusur.ru/?45792)\n" +
+                    "•Медицинские информационные системы (https://do.tusur.ru/courses/programs/medical_information_systems)\n" +
+                    "•Веб-интерфейсы и специальные сетевые протоколы для сбора информации и управления сенсорными системами (https://do.tusur.ru/courses/programs/web_interfaces_and_network_protocols)\n" +
+                    "•Активные и пассивные элементы СВЧ интегральной наноэлектроники (https://do.tusur.ru/courses/programs/elements_of_SHF_integrated_nanoelectronics)\n" +
+                    "•Разработка элементов и узлов трактов приёма и передачи твердотельных СВЧ сенсорных модулей (https://do.tusur.ru/courses/programs/SHF-modules)\n" +
+                    "\n•Программирование логических интегральных схем. Реализация алгоритмов физического уровня передатчика системы беспроводной связи (https://do.tusur.ru/?45842)\n" +
+                    "•Разработка встраиваемых систем для систем интернета вещей. Введение (https://do.tusur.ru/?45843)\n" +
+                    "•Искусственный интеллект в задачах биометрической аутентификации для обеспечения доверенного взаимодействия (https://do.tusur.ru/?45847)\n" +
+                    "\nЭто неполный список направлений. Больше информации - https://do.tusur.ru/",
+                    replyMarkup: dopback,
+                    cancellationToken: token);
+                }
+                if (update.CallbackQuery.Data == "doporprof6")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Образование\nПрофессиональная переподготовка:\n" +
+                    "\n•Преподаватель высшей школы в эпоху цифровизации (https://do.tusur.ru/courses/programs/university-professor)\n" +
+                    "\nПовышение квалификации:\n" +
+                    "•Система ДПО организации: от анализа рынка до программы развития (https://do.tusur.ru/courses/programs/online-school-dpo-2)\n" +
+                    "•Проектирование программы ДПО: от анализа рынка до визитки курса (https://do.tusur.ru/courses/programs/online-school-dpo-1)\n" +
+                    "•Визуализация учебных материалов (https://do.tusur.ru/?45657)\n" +
+                    "•Интерактивность как фактор мотивации обучения (https://do.tusur.ru/?45682)\n" +
+                    "•Интерактивные методы обучения и элементы геймификации в электронном курсе (https://do.tusur.ru/?45658)\n" +
+                    "•Мобильные приложения для преподавателя (https://do.tusur.ru/?45659)\n" +
+                    "•Методы искусственного интеллекта и обработки данных в реализации персонализированного обучения (https://do.tusur.ru/?45837)\n" +
+                    "•Модели и технологии интеграции готовых онлайн-курсов в учебный процесс (https://do.tusur.ru/?45820)\n" +
+                    "•Мотивация и вовлечение в электронном обучении (https://do.tusur.ru/?45776)\n" +
+                    "•Проектирование и разработка электронных курсов в цифровой образовательной среде. Базовый уровень (https://do.tusur.ru/?45769)\n" +
+                    "•Проектирование и разработка электронных курсов в цифровой образовательной среде. Продвинутый уровень (https://do.tusur.ru/?45805)\n" +
+                    "•Проектирование учебного процесса по дисциплине в цифровой образовательной среде (https://do.tusur.ru/?45806)\n" +
+                    "•Разработка и использование электронных курсов в учебном процессе (https://do.tusur.ru/?45766)\n" +
+                    "•Системный администратор Moodle (https://do.tusur.ru/?45807)\n" +
+                    "\nБольше информации - https://do.tusur.ru/",
+                    replyMarkup: dopback,
+                    cancellationToken: token);
+                }
+                if (update.CallbackQuery.Data == "doporprof7")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Экономика и управление\nПрофессиональная переподготовка:\n" +
+                    "\n•Государственное и муниципальное управление (https://do.tusur.ru/?45864)\n" +
+                    "•Кадровое делопроизводство и работа с персоналом (https://do.tusur.ru/?45717)\n" +
+                    "•Организация и документальное обеспечение управления организацией (https://do.tusur.ru/?45739)\n" +
+                    "•Управление персоналом (https://do.tusur.ru/courses/programs/personnel-management)\n" +
+                    "•Управление персоналом и подразделением организации (https://do.tusur.ru/?45718)\n" +
+                    "•Управление проектами (https://do.tusur.ru/courses/programs/project-management )\n" +
+                    "•Экономика предприятия (https://do.tusur.ru/?45640)\n" +
+                    "\nПовышение квалификации:\n" +
+                    "\n•Работа в MS Excel (https://do.tusur.ru/?45684)\n" +
+                    "•Работа в MS Excel: расширенные возможности https://do.tusur.ru/?45685()\n" +
+                    "•Excel для экономистов (https://do.tusur.ru/?45866)\n" +
+                    "•Excel для бухгалтеров, экономистов, финансовых менеджеров (https://do.tusur.ru/?45867)\n" +
+                    "\n•Управление персоналом (https://do.tusur.ru/?45879)\n" +
+                    "•Управление проектами (https://do.tusur.ru/?45880)\n" +
+                    "•Управление государственными и муниципальными закупками (https://do.tusur.ru/?45881)\n" +
+                    "•Государственная и муниципальная служба (https://do.tusur.ru/?45882)\n" +
+                    "•Государственные и муниципальные финансы (https://do.tusur.ru/?45883)\n" +
+                    "\n•Сервис-менеджер. Клиентский сервис от А до Я (https://do.tusur.ru/?45855)\n" +
+                    "•Agile, Scrum – гибкие методологии управления проектами (https://do.tusur.ru/?45700)\n" +
+                    "•Интернет-маркетинг (https://do.tusur.ru/?45587)\n" +
+                    "•Управление проектами: методология, подходы, цифровые инструменты (https://do.tusur.ru/courses/programs/project_management)\n" +
+                    "•Управление финансами и основы инвестирования (https://do.tusur.ru/courses/programs/personal_finance_management)\n" +
+                    "•Системный подход в управлении компанией, сотрудниками и взаимоотношениями с клиентами с помощью \"Битрикс24\" (https://do.tusur.ru/?45841)\n" +
                     "\nБольше информации - https://do.tusur.ru/",
                     replyMarkup: dopback,
                     cancellationToken: token);
@@ -351,10 +443,20 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
                     messageId: update.CallbackQuery.Message.MessageId,
                     chatId: update.CallbackQuery.Message.Chat.Id,
                     text: "Здесь вы можете узнать следующую информацию:",
-                    replyMarkup: menu0,
+                    replyMarkup: menu0, 
                     cancellationToken: token);
                 }
-                
+                if (update.CallbackQuery.Data == "myCommand6")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Специалист по вопросам поступления\nБезрукова Вера Петровна\nКонтактные данные:\nПочта - bvp@2i.tusur.ru\nТелефон - 8 (3822) 701-736, 8-923-407-66-83\nСкайп - bezrukova_vera\nWhatsApp - 8-923-434-11-90\n" +
+                    "\nСпециалист по вопросам обучения школьников\nТахтабаева Ильмира Хусаиновна\nКонтактные данные:\nПочта - tih@2i.tusur.ru\nТелефон - 8 (3822) 533-077\nWhatsApp - 8-923-443-24-16\n" +
+                    "\nКуратор дистанционного обучения\nЗавадовская Олеся Александровна\nКонтактные данные:\nПочта - zoa@2i.tusur.ru\nТелефон - 8 (3822) 701-736",
+                    replyMarkup: phone_back,
+                    cancellationToken: token);
+                }
                 if (update.CallbackQuery.Data == "myCommand1")
                 {
                     Message sentMessage = await client.EditMessageTextAsync(
