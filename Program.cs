@@ -32,8 +32,6 @@ ReceiverOptions receiverOptions = new()
 {
     AllowedUpdates = Array.Empty<UpdateType>()
 };
-//Console.WriteLine("Запущен бот " + client.GetMeAsync().Result.FirstName);
-//client.AnswerCallbackQueryAsync += CallbackQueryArg;
 client.StartReceiving(updateHandler: HandleUpdateAsync,
     pollingErrorHandler: HandlePollingErrorAsync,
     receiverOptions: receiverOptions,
@@ -47,10 +45,6 @@ if (System.IO.File.Exists(path))
 else
 {
     Console.WriteLine("файла нет");
-}
-using (StreamWriter writer = new StreamWriter(path,true))
-{
-    await writer.WriteLineAsync($"Старт @{me.Username}, время {DateTime.Now}");
 }
 Console.WriteLine($"Старт @{me.Username}, время {DateTime.Now}");
 Console.ReadLine();
@@ -255,15 +249,42 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
         {
             await client.SendTextMessageAsync(chatId, $"Здравствуйте, {str} ,выберите, вы слушатель или пользователь:", replyMarkup: menu1, cancellationToken: token);
         }
-        else if (words.Length != 2)
+        else if (words.Length != 2 && words.Length !=5)
         {
             await client.SendTextMessageAsync(chatId, "Что-то пошло не так, введите /start для начала работы", cancellationToken: token);
+        }
+        else if (words.Length == 5)
+        {
+            if (words[3].Contains("+") && words[4].Contains("@"))
+            {
+                string path = @"C:\Users\Администратор\Desktop\zapis'_bot.txt";
+                using (StreamWriter writer = new StreamWriter(path, true))
+                {
+                    await writer.WriteLineAsync($"\nПодана заявка на обучение:\nФИО - {words[0]} {words[1]} {words[2]}\nТелефон - {words[3]}\nПочта - {words[4]}");
+                }
+                await client.SendTextMessageAsync(chatId, "Ваша заявка на обучение принята, с вами скоро свяжутся.", replyMarkup: phone_back, cancellationToken: token);
+                await client.DeleteMessageAsync(chatId,update.Message.MessageId-1,cancellationToken:token);
+            }
+            else
+            {
+                await client.SendTextMessageAsync(chatId,"Вы ввели некорректно почту или телефон, проверьте правильность ввода и повторите попытку.",cancellationToken: token);
+            }
         }
     }
     switch (update.Type)
     {
         case UpdateType.CallbackQuery:
         {
+                if (update.CallbackQuery.Data == "ApplicationForTraining")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "Введите ваше ФИО, номер телефона (в формате +7...), электронную почту.\n" +
+                    "Ввод осуществляется в одно сообщение через пробел",
+                    replyMarkup: dopback,
+                    cancellationToken: token);
+                }
                 if (update.CallbackQuery.Data == "doporprof1")
                 {
                     Message sentMessage = await client.EditMessageTextAsync(
