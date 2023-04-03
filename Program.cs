@@ -138,6 +138,10 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
         },
         new []
         {
+            InlineKeyboardButton.WithCallbackData(text:"Адреса",callbackData:"myCommand7")
+        },
+        new []
+        {
             InlineKeyboardButton.WithCallbackData(text:"Группа ВК",callbackData:"myCommand5")//группа вк
         },
         new []
@@ -192,7 +196,7 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
                     await writer.WriteLineAsync($"Авторизовался пользователь: логин - {authorization1}, пароль - {authorization2}");
                 }
                 string connectionString = @"server=localhost\SQLEXPRESS; Trusted_Connection=YES;DataBase=bot;";
-                string sqlExperssion = "select Persons.surname,Persons.name,Persons.patronymic,Competence.name_competce,DAY(Courses.date_start),MONTH(Courses.date_start),YEAR(Courses.date_start),DAY(Courses.date_end),MONTH(Courses.date_end),YEAR(Courses.date_end),timetable.[day],timetable.time_1,timetable.time_2,Listeners.email,sex.sex_name from Listeners,Persons,Competence,Courses,timetable,sex where Courses.id_time = timetable.id and Listeners.id_course = Courses.id and Courses.id_competence = Competence.id and Listeners.id_person = Persons.id and Persons.id_sex = sex.id and login_listener = '" + words[0] + "'";
+                string sqlExperssion = "select Persons.surname,Persons.name,Persons.patronymic,Competence.name_competce,DAY(Courses.date_start),MONTH(Courses.date_start),YEAR(Courses.date_start),DAY(Courses.date_end),MONTH(Courses.date_end),YEAR(Courses.date_end),timetable.[day],timetable.time_1,timetable.time_2,Listeners.email,sex.sex_name,Courses.moodle_url from Listeners,Persons,Competence,Courses,timetable,sex where Courses.id_time = timetable.id and Listeners.id_course = Courses.id and Courses.id_competence = Competence.id and Listeners.id_person = Persons.id and Persons.id_sex = sex.id and login_listener = '" + words[0] + "'";
                 using SqlConnection connection = new SqlConnection(connectionString);
                 {
                     if (connection.State == ConnectionState.Closed)
@@ -217,6 +221,7 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
                             object time2 = reader.GetValue(12);
                             object email = reader.GetValue(13);
                             object sex = reader.GetValue(14);
+                            object moodle = reader.GetValue(15);
                             await client.SendTextMessageAsync(
                                 chatId,
                                 text: "Личный кабинет пользователя\nФИО:" +
@@ -227,7 +232,7 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
                                 "\nДата начала курса: " + datestartday.ToString() + "." + datestartmounth.ToString() + "." + datestartYear.ToString() + 
                                 "\nДата окончания курса: " + dateendday.ToString() + "." + dateendmounth.ToString() + "." + dateendyear.ToString() + 
                                 "\nПроведение занятий: " + timeday.ToString() + " c " + time1.ToString()[..+5] + " до " + time2.ToString()[..+5] +
-                                "\nПочта: " + email.ToString(),
+                                "\nПочта: " + email.ToString() + "\nСсылка на курс: " + moodle.ToString(),
                                 replyMarkup: personalArea,
                                 cancellationToken: token);
                         }
@@ -275,6 +280,15 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
     {
         case UpdateType.CallbackQuery:
         {
+                if (update.CallbackQuery.Data == "myCommand7")
+                {
+                    Message sentMessage = await client.EditMessageTextAsync(
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: "ул. 19 Гвардейской дивизии, 9а (https://go.2gis.com/td6s24)\n пр.Ленина, 40, оф.127 (https://go.2gis.com/i8kvw)",
+                    replyMarkup: groupvk,
+                    cancellationToken: token);
+                }
                 if (update.CallbackQuery.Data == "ApplicationForTraining")
                 {
                     Message sentMessage = await client.EditMessageTextAsync(
