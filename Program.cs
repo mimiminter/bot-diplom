@@ -282,7 +282,7 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
                     chatId: update.CallbackQuery.Message.Chat.Id,
                     text: "Введите ваше ФИО, номер телефона (в формате +7...), электронную почту.\n" +
                     "Ввод осуществляется в одно сообщение через пробел",
-                    replyMarkup: dopback,
+                    replyMarkup: groupvk,
                     cancellationToken: token);
                 }
                 if (update.CallbackQuery.Data == "doporprof1")
