@@ -26,7 +26,7 @@ static DataTable Select(string selectSQL)
     sqlConnection.Close();
     return dataTable;
 }
-var client = new TelegramBotClient("5955487728:AAG44mfbhOpcSFV4Howjno5I94QSqHzaYcI");
+var client = new TelegramBotClient("6253781179:AAFMZHgyMJPx74zGZOOJDAEAFbtpwkMIWZY");
 using var cts = new CancellationTokenSource();
 ReceiverOptions receiverOptions = new()
 {
@@ -53,10 +53,6 @@ async Task HandleUpdateAsync(ITelegramBotClient client, Update update, Cancellat
 {
     InlineKeyboardMarkup personalArea = new(new[]
     {
-        /* new []
-        {
-            InlineKeyboardButton.WithCallbackData(text:"Сменить пароль",callbackData:"personalAreaPasswordUpdate")//смена пароля слушателя
-        },*/
         new []
         {
             InlineKeyboardButton.WithCallbackData(text:"Выход",callbackData:"personalAreaBack")//назад в кабинете слушателя
